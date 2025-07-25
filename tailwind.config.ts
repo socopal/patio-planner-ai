@@ -52,6 +52,17 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				wood: {
+					gris: 'hsl(var(--wood-gris))',
+					acajou: 'hsl(var(--wood-acajou))',
+					chene: 'hsl(var(--wood-chene))',
+					marron: 'hsl(var(--wood-marron))'
+				},
+				deck: {
+					surface: 'hsl(var(--deck-surface))',
+					shadow: 'hsl(var(--deck-shadow))',
+					lambourde: 'hsl(var(--lambourde))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

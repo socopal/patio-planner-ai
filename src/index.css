@@ -8,26 +8,45 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 35 15% 96%;
+    --foreground: 25 25% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 25 25% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 25 25% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 25 45% 35%;
+    --primary-foreground: 35 15% 96%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 35 20% 88%;
+    --secondary-foreground: 25 25% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 35 15% 92%;
+    --muted-foreground: 25 15% 45%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 30 35% 75%;
+    --accent-foreground: 25 25% 15%;
+
+    /* Wood colors */
+    --wood-gris: 210 15% 65%;
+    --wood-acajou: 15 45% 35%;
+    --wood-chene: 35 25% 55%;
+    --wood-marron: 25 35% 25%;
+
+    /* Deck specific colors */
+    --deck-surface: 35 20% 85%;
+    --deck-shadow: 25 15% 70%;
+    --lambourde: 25 35% 45%;
+
+    /* Gradients */
+    --gradient-deck: linear-gradient(135deg, hsl(var(--deck-surface)), hsl(var(--deck-shadow)));
+    --gradient-primary: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+
+    /* Shadows */
+    --shadow-deck: 0 8px 25px -8px hsl(var(--primary) / 0.2);
+    --shadow-elegant: 0 10px 30px -10px hsl(var(--primary) / 0.15);
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
