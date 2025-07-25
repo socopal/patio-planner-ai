@@ -10,6 +10,7 @@ import { DeckConfig, DeckShape, WoodColor, WoodFinish, EdgeType } from '@/types/
 import { DeckVisualizer } from './DeckVisualizer';
 import { MaterialsCalculator } from './MaterialsCalculator';
 import { LambourdeView } from './LambourdeView';
+import { EdgeSelector } from './EdgeSelector';
 import { Calculator, Eye, Grid } from 'lucide-react';
 
 const WOOD_COLORS: { value: WoodColor; label: string; class: string }[] = [
@@ -42,6 +43,12 @@ export const DeckConfigurator = () => {
     finish: 'brossée',
     edgeType: 'cornières',
     includeEdges: true,
+    edgeSelection: {
+      top: true,
+      bottom: true,
+      left: true,
+      right: true,
+    },
   });
 
   const [activeView, setActiveView] = useState<'deck' | 'lambourdes' | 'calculator'>('deck');
@@ -214,18 +221,26 @@ export const DeckConfigurator = () => {
                 </div>
 
                 {config.includeEdges && (
-                  <Select
-                    value={config.edgeType}
-                    onValueChange={(value: EdgeType) => updateConfig({ edgeType: value })}
-                  >
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="cornières">Cornières</SelectItem>
-                      <SelectItem value="plinthes">Plinthes</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <>
+                    <Select
+                      value={config.edgeType}
+                      onValueChange={(value: EdgeType) => updateConfig({ edgeType: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="cornières">Cornières</SelectItem>
+                        <SelectItem value="plinthes">Plinthes</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    
+                    <EdgeSelector
+                      edgeSelection={config.edgeSelection || { top: true, bottom: true, left: true, right: true }}
+                      onEdgeSelectionChange={(edgeSelection) => updateConfig({ edgeSelection })}
+                      edgeType={config.edgeType}
+                    />
+                  </>
                 )}
               </div>
 

@@ -12,6 +12,13 @@ export interface DeckDimensions {
   extensionDirection?: 'top' | 'bottom' | 'left' | 'right';
 }
 
+export interface EdgeSelection {
+  top: boolean;
+  bottom: boolean;
+  left: boolean;
+  right: boolean;
+}
+
 export interface DeckConfig {
   shape: DeckShape;
   dimensions: DeckDimensions;
@@ -19,6 +26,7 @@ export interface DeckConfig {
   finish: WoodFinish;
   edgeType: EdgeType;
   includeEdges: boolean;
+  edgeSelection?: EdgeSelection;
 }
 
 export interface MaterialCalculation {

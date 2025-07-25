@@ -30,20 +30,37 @@ export const MaterialsCalculator = ({ config }: MaterialsCalculatorProps) => {
   };
 
   const calculatePerimeter = (): number => {
+    if (!config.includeEdges || !config.edgeSelection) {
+      return 0;
+    }
+    
+    const { width, height } = config.dimensions;
+    let perimeter = 0;
+    
     if (config.shape === 'rectangulaire') {
-      return 2 * (config.dimensions.width + config.dimensions.height);
+      if (config.edgeSelection.top) perimeter += width;
+      if (config.edgeSelection.bottom) perimeter += width;
+      if (config.edgeSelection.left) perimeter += height;
+      if (config.edgeSelection.right) perimeter += height;
+      return perimeter;
     }
     
     if (config.shape === 'L') {
       const extW = config.dimensions.extensionWidth || 0;
       const extH = config.dimensions.extensionHeight || 0;
-      return 2 * (config.dimensions.width + config.dimensions.height) + 2 * (extW + extH) - 2 * Math.min(extW, config.dimensions.width);
+      
+      // Calcul simplifié pour forme L - approximation du périmètre
+      const totalPerimeter = 2 * (width + height) + 2 * (extW + extH) - 2 * Math.min(extW, width);
+      return totalPerimeter * (Object.values(config.edgeSelection).filter(Boolean).length / 4);
     }
     
     if (config.shape === 'U') {
       const extW = config.dimensions.extensionWidth || 0;
       const extH = config.dimensions.extensionHeight || 0;
-      return 2 * (config.dimensions.width + config.dimensions.height) + 4 * (extW + extH) - 4 * Math.min(extW, config.dimensions.width);
+      
+      // Calcul simplifié pour forme U - approximation du périmètre
+      const totalPerimeter = 2 * (width + height) + 4 * (extW + extH) - 4 * Math.min(extW, width);
+      return totalPerimeter * (Object.values(config.edgeSelection).filter(Boolean).length / 4);
     }
     
     return 0;
@@ -51,7 +68,7 @@ export const MaterialsCalculator = ({ config }: MaterialsCalculatorProps) => {
 
   const calculateMaterials = (): MaterialCalculation => {
     const area = calculateArea();
-    const perimeter = config.includeEdges ? calculatePerimeter() : 0;
+    const perimeter = calculatePerimeter();
     
     return {
       area,
