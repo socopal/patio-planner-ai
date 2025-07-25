@@ -61,12 +61,21 @@ export const DeckConfigurator = () => {
     <div className="min-h-screen bg-background p-6">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
-            Configurateur de Terrasse
-          </h1>
-          <p className="text-muted-foreground text-lg">
-            Concevez votre terrasse en bois composite avec calcul automatique des matériaux
-          </p>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img 
+              src="/lovable-uploads/b4a5f837-fa16-4db7-b1e2-7650a5b82e88.png" 
+              alt="ECODECK Logo" 
+              className="h-16 w-auto"
+            />
+            <div>
+              <h1 className="text-4xl font-bold mb-2 bg-gradient-primary bg-clip-text text-transparent">
+                Configurateur de Terrasse
+              </h1>
+              <p className="text-muted-foreground text-lg">
+                Concevez votre terrasse en bois composite avec calcul automatique des matériaux
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
