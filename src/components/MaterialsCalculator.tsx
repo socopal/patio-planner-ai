@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calculator, Download, Package, DollarSign } from 'lucide-react';
+import jsPDF from 'jspdf';
 
 interface MaterialsCalculatorProps {
   config: DeckConfig;
@@ -107,49 +108,72 @@ export const MaterialsCalculator = ({ config }: MaterialsCalculatorProps) => {
     }).format(price);
   };
 
-  const generateReport = () => {
-    const report = `
-DEVIS TERRASSE EN BOIS COMPOSITE
-================================
-
-Configuration:
-- Forme: ${config.shape}
-- Dimensions: ${config.dimensions.width}m × ${config.dimensions.height}m
-${config.shape !== 'rectangulaire' ? `- Extension: ${config.dimensions.extensionWidth}m × ${config.dimensions.extensionHeight}m` : ''}
-- Couleur: ${config.color}
-- Finition: ${config.finish}
-- Surface totale: ${materials.area.toFixed(2)} m²
-- Périmètre: ${materials.perimeter.toFixed(2)} m
-
-Matériaux nécessaires:
-- Lames: ${materials.lames.toFixed(2)} m
-- Lambourdes: ${materials.lambourdes.toFixed(2)} m
-- Clips de fixation: ${Math.ceil(materials.clips)} unités
-${config.includeEdges ? `- ${config.edgeType}: ${materials.edges.toFixed(2)} m` : ''}
-
-Prix détaillé:
-- Lames: ${formatPrice(prices.lames)}
-- Lambourdes: ${formatPrice(prices.lambourdes)}
-- Clips: ${formatPrice(prices.clips)}
-${config.includeEdges ? `- ${config.edgeType}: ${formatPrice(prices.edges)}` : ''}
-
-TOTAL: ${formatPrice(prices.total)}
-
-Informations techniques:
-- Lambourdes espacées de 50 cm
-- Lames posées perpendiculairement sur les lambourdes
-- Consommation par m²: ${MATERIAL_CONSUMPTION.LAMES_PER_M2}m de lames, ${MATERIAL_CONSUMPTION.LAMBOURDES_PER_M2}m de lambourdes, ${MATERIAL_CONSUMPTION.CLIPS_PER_M2} clips
-`;
-
-    const blob = new Blob([report], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `devis-terrasse-${Date.now()}.txt`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
+    
+    // Title
+    doc.setFontSize(20);
+    doc.text('DEVIS TERRASSE COMPOSITE', 20, 30);
+    
+    // Date
+    doc.setFontSize(10);
+    doc.text(`Date: ${new Date().toLocaleDateString('fr-FR')}`, 150, 30);
+    
+    // Configuration
+    doc.setFontSize(14);
+    doc.text('Configuration:', 20, 50);
+    doc.setFontSize(10);
+    doc.text(`- Forme: Rectangulaire`, 20, 60);
+    doc.text(`- Dimensions: ${config.dimensions.width}m x ${config.dimensions.height}m`, 20, 70);
+    doc.text(`- Surface totale: ${materials.area.toFixed(2)} m²`, 20, 80);
+    doc.text(`- Couleur: ${config.color}`, 20, 90);
+    doc.text(`- Finition: ${config.finish}`, 20, 100);
+    
+    if (config.includeEdges) {
+      const selectedEdges = Object.entries(config.edgeSelection || {})
+        .filter(([_, selected]) => selected)
+        .map(([side]) => side)
+        .join(', ');
+      doc.text(`- Contours ${config.edgeType}: ${selectedEdges}`, 20, 110);
+      doc.text(`- Périmètre de contours: ${materials.perimeter.toFixed(2)}m`, 20, 120);
+    }
+    
+    // Materials
+    doc.setFontSize(14);
+    doc.text('Matériaux nécessaires:', 20, 140);
+    doc.setFontSize(10);
+    doc.text(`- Lames: ${materials.lames.toFixed(2)}m`, 30, 155);
+    doc.text(`- Lambourdes: ${materials.lambourdes.toFixed(2)}m`, 30, 165);
+    doc.text(`- Clips: ${materials.clips} unités`, 30, 175);
+    if (config.includeEdges) {
+      doc.text(`- ${config.edgeType}: ${materials.edges.toFixed(2)}m`, 30, 185);
+    }
+    
+    // Prices
+    doc.setFontSize(14);
+    doc.text('Détail des prix:', 20, 205);
+    doc.setFontSize(10);
+    doc.text(`- Lames: ${formatPrice(prices.lames)}`, 30, 220);
+    doc.text(`- Lambourdes: ${formatPrice(prices.lambourdes)}`, 30, 230);
+    doc.text(`- Clips: ${formatPrice(prices.clips)}`, 30, 240);
+    if (config.includeEdges) {
+      doc.text(`- ${config.edgeType}: ${formatPrice(prices.edges)}`, 30, 250);
+    }
+    
+    // Total
+    doc.setFontSize(16);
+    doc.text(`TOTAL: ${formatPrice(prices.total)}`, 20, 270);
+    
+    // Notes
+    doc.setFontSize(8);
+    doc.text('Notes techniques:', 20, 290);
+    doc.text('- Prix exprimés en DA', 20, 298);
+    doc.text('- Lambourdes espacées de 50cm', 20, 304);
+    doc.text('- Lames posées perpendiculairement sur les lambourdes', 20, 310);
+    doc.text(`- Consommation par m²: ${MATERIAL_CONSUMPTION.LAMES_PER_M2}m de lames, ${MATERIAL_CONSUMPTION.LAMBOURDES_PER_M2}m de lambourdes, ${MATERIAL_CONSUMPTION.CLIPS_PER_M2} clips`, 20, 316);
+    
+    // Save PDF
+    doc.save(`devis-terrasse-${Date.now()}.pdf`);
   };
 
   return (
@@ -262,9 +286,9 @@ Informations techniques:
               Plinthes {PRICES.PLINTHES_PER_M} DA/m
             </div>
             
-            <Button onClick={generateReport} className="flex items-center gap-2">
+            <Button onClick={generatePDFReport} className="flex items-center gap-2">
               <Download className="w-4 h-4" />
-              Télécharger le devis
+              Télécharger le devis PDF
             </Button>
           </div>
         </CardContent>
