@@ -37,6 +37,79 @@ export const DeckVisualizer = ({ config }: DeckVisualizerProps) => {
     return mainArea;
   };
 
+  const renderEdges = (element: HTMLElement, width: number, height: number) => {
+    const edgeSelection = config.edgeSelection || { top: true, bottom: true, left: true, right: true };
+    const edges = [];
+
+    if (config.includeEdges) {
+      // Top edge
+      if (edgeSelection.top) {
+        edges.push(
+          <div
+            key="edge-top"
+            className="absolute bg-blue-500 rounded-sm"
+            style={{
+              top: '-4px',
+              left: '0px',
+              width: `${width}px`,
+              height: '3px',
+            }}
+          />
+        );
+      }
+
+      // Bottom edge
+      if (edgeSelection.bottom) {
+        edges.push(
+          <div
+            key="edge-bottom"
+            className="absolute bg-blue-500 rounded-sm"
+            style={{
+              bottom: '-4px',
+              left: '0px',
+              width: `${width}px`,
+              height: '3px',
+            }}
+          />
+        );
+      }
+
+      // Left edge
+      if (edgeSelection.left) {
+        edges.push(
+          <div
+            key="edge-left"
+            className="absolute bg-blue-500 rounded-sm"
+            style={{
+              top: '0px',
+              left: '-4px',
+              width: '3px',
+              height: `${height}px`,
+            }}
+          />
+        );
+      }
+
+      // Right edge
+      if (edgeSelection.right) {
+        edges.push(
+          <div
+            key="edge-right"
+            className="absolute bg-blue-500 rounded-sm"
+            style={{
+              top: '0px',
+              right: '-4px',
+              width: '3px',
+              height: `${height}px`,
+            }}
+          />
+        );
+      }
+    }
+
+    return edges;
+  };
+
   const renderDeck = () => {
     const colorClass = getColorClass(color);
     const scale = Math.min(400 / Math.max(dimensions.width, dimensions.height), 50);
@@ -44,160 +117,39 @@ export const DeckVisualizer = ({ config }: DeckVisualizerProps) => {
     const mainWidth = dimensions.width * scale;
     const mainHeight = dimensions.height * scale;
 
-    if (shape === 'rectangulaire') {
-      return (
-        <div className="flex items-center justify-center h-96">
-          <div
-            className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck relative`}
-            style={{
-              width: `${mainWidth}px`,
-              height: `${mainHeight}px`,
-            }}
-          >
-            {/* Lames pattern */}
-            <div className="absolute inset-1 overflow-hidden rounded">
-              {Array.from({ length: Math.ceil(mainHeight / 8) }).map((_, i) => (
-                <div
-                  key={i}
-                  className="absolute left-0 right-0 border-b border-primary/10"
-                  style={{ top: `${i * 8}px`, height: '6px' }}
-                />
-              ))}
-            </div>
-            
-            {/* Dimensions labels */}
-            <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm font-medium text-foreground">
-              {dimensions.width}m
-            </div>
-            <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm font-medium text-foreground">
-              {dimensions.height}m
-            </div>
+    return (
+      <div className="flex items-center justify-center h-96">
+        <div
+          className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck relative`}
+          style={{
+            width: `${mainWidth}px`,
+            height: `${mainHeight}px`,
+          }}
+        >
+          {/* Lames pattern */}
+          <div className="absolute inset-1 overflow-hidden rounded">
+            {Array.from({ length: Math.ceil(mainHeight / 8) }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute left-0 right-0 border-b border-primary/10"
+                style={{ top: `${i * 8}px`, height: '6px' }}
+              />
+            ))}
+          </div>
+          
+          {/* Edges */}
+          {renderEdges(null as any, mainWidth, mainHeight)}
+          
+          {/* Dimensions labels */}
+          <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-sm font-medium text-foreground">
+            {dimensions.width}m
+          </div>
+          <div className="absolute -left-12 top-1/2 transform -translate-y-1/2 -rotate-90 text-sm font-medium text-foreground">
+            {dimensions.height}m
           </div>
         </div>
-      );
-    }
-
-    if (shape === 'L') {
-      const extWidth = (dimensions.extensionWidth || 2) * scale;
-      const extHeight = (dimensions.extensionHeight || 2) * scale;
-
-      return (
-        <div className="flex items-center justify-center h-96">
-          <div className="relative">
-            {/* Main section */}
-            <div
-              className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck relative`}
-              style={{
-                width: `${mainWidth}px`,
-                height: `${mainHeight}px`,
-              }}
-            >
-              <div className="absolute inset-1 overflow-hidden rounded">
-                {Array.from({ length: Math.ceil(mainHeight / 8) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-0 right-0 border-b border-primary/10"
-                    style={{ top: `${i * 8}px`, height: '6px' }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Extension */}
-            <div
-              className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck absolute top-0 -right-2 relative`}
-              style={{
-                width: `${extWidth}px`,
-                height: `${extHeight}px`,
-                left: `${mainWidth - 2}px`,
-              }}
-            >
-              <div className="absolute inset-1 overflow-hidden rounded">
-                {Array.from({ length: Math.ceil(extHeight / 8) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-0 right-0 border-b border-primary/10"
-                    style={{ top: `${i * 8}px`, height: '6px' }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    if (shape === 'U') {
-      const extWidth = (dimensions.extensionWidth || 2) * scale;
-      const extHeight = (dimensions.extensionHeight || 2) * scale;
-
-      return (
-        <div className="flex items-center justify-center h-96">
-          <div className="relative">
-            {/* Main section */}
-            <div
-              className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck relative`}
-              style={{
-                width: `${mainWidth}px`,
-                height: `${mainHeight}px`,
-              }}
-            >
-              <div className="absolute inset-1 overflow-hidden rounded">
-                {Array.from({ length: Math.ceil(mainHeight / 8) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-0 right-0 border-b border-primary/10"
-                    style={{ top: `${i * 8}px`, height: '6px' }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Left extension */}
-            <div
-              className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck absolute top-0`}
-              style={{
-                width: `${extWidth}px`,
-                height: `${extHeight}px`,
-                left: `-${extWidth + 2}px`,
-              }}
-            >
-              <div className="absolute inset-1 overflow-hidden rounded">
-                {Array.from({ length: Math.ceil(extHeight / 8) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-0 right-0 border-b border-primary/10"
-                    style={{ top: `${i * 8}px`, height: '6px' }}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Right extension */}
-            <div
-              className={`${colorClass} border-2 border-primary/20 rounded-lg shadow-deck absolute top-0`}
-              style={{
-                width: `${extWidth}px`,
-                height: `${extHeight}px`,
-                left: `${mainWidth + 2}px`,
-              }}
-            >
-              <div className="absolute inset-1 overflow-hidden rounded">
-                {Array.from({ length: Math.ceil(extHeight / 8) }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="absolute left-0 right-0 border-b border-primary/10"
-                    style={{ top: `${i * 8}px`, height: '6px' }}
-                  />
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
-    return null;
+      </div>
+    );
   };
 
   return (
