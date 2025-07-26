@@ -95,25 +95,6 @@ export const DeckConfigurator = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              {/* Shape Selection */}
-              <div className="space-y-2">
-                <Label>Forme de la terrasse</Label>
-                <Select
-                  value={config.shape}
-                  onValueChange={(value: DeckShape) => updateConfig({ shape: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {DECK_SHAPES.map(shape => (
-                      <SelectItem key={shape.value} value={shape.value}>
-                        {shape.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
 
               {/* Dimensions */}
               <div className="space-y-4">
@@ -143,32 +124,6 @@ export const DeckConfigurator = () => {
                   </div>
                 </div>
 
-                {(config.shape === 'L' || config.shape === 'U') && (
-                  <div className="grid grid-cols-2 gap-3 mt-3">
-                    <div>
-                      <Label htmlFor="extWidth" className="text-sm">Extension largeur</Label>
-                      <Input
-                        id="extWidth"
-                        type="number"
-                        min="1"
-                        step="0.1"
-                        value={config.dimensions.extensionWidth || 2}
-                        onChange={(e) => updateDimensions({ extensionWidth: parseFloat(e.target.value) || 2 })}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="extHeight" className="text-sm">Extension longueur</Label>
-                      <Input
-                        id="extHeight"
-                        type="number"
-                        min="1"
-                        step="0.1"
-                        value={config.dimensions.extensionHeight || 2}
-                        onChange={(e) => updateDimensions({ extensionHeight: parseFloat(e.target.value) || 2 })}
-                      />
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Color Selection */}
@@ -247,9 +202,6 @@ export const DeckConfigurator = () => {
               {/* Current Selection */}
               <div className="pt-4 border-t">
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">
-                    {DECK_SHAPES.find(s => s.value === config.shape)?.label}
-                  </Badge>
                   <Badge variant="secondary">
                     {config.dimensions.width}m × {config.dimensions.height}m
                   </Badge>
