@@ -20,10 +20,10 @@ const WOOD_COLORS: { value: WoodColor; label: string; class: string }[] = [
   { value: 'marron', label: 'Marron', class: 'bg-wood-marron' },
 ];
 
-const WOOD_FINISHES: { value: WoodFinish; label: string }[] = [
+const WOOD_FINISHES: { value: WoodFinish; label: string; image?: string }[] = [
   { value: 'brossée', label: 'Brossée' },
   { value: 'structurée', label: 'Structurée' },
-  { value: 'poncée', label: 'Poncée' },
+  { value: 'poncée', label: 'Poncée', image: '/lovable-uploads/2f534ebc-84c6-462a-a346-15c9cc9b2657.png' },
 ];
 
 const DECK_SHAPES: { value: DeckShape; label: string }[] = [
@@ -145,23 +145,29 @@ export const DeckConfigurator = () => {
               </div>
 
               {/* Finish Selection */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <Label>Finition</Label>
-                <Select
-                  value={config.finish}
-                  onValueChange={(value: WoodFinish) => updateConfig({ finish: value })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {WOOD_FINISHES.map(finish => (
-                      <SelectItem key={finish.value} value={finish.value}>
-                        {finish.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="grid grid-cols-1 gap-2">
+                  {WOOD_FINISHES.map(finish => (
+                    <Button
+                      key={finish.value}
+                      variant={config.finish === finish.value ? "default" : "outline"}
+                      onClick={() => updateConfig({ finish: finish.value })}
+                      className="justify-start gap-3 h-auto p-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        {finish.image && (
+                          <img 
+                            src={finish.image} 
+                            alt={`Finition ${finish.label}`}
+                            className="w-8 h-8 rounded object-cover border border-border"
+                          />
+                        )}
+                        <span>{finish.label}</span>
+                      </div>
+                    </Button>
+                  ))}
+                </div>
               </div>
 
               {/* Edge Options */}
